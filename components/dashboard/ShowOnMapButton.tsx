@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MapIcon } from "@heroicons/react/24/outline";
 import type { NetworkName, CountryCode } from "@/types";
@@ -16,12 +17,14 @@ export function ShowOnMapButton({
   maxNetworks,
 }: ShowOnMapButtonProps) {
   const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
   const count = selectedNetworks.size;
-  const isDisabled = count === 0 || count > maxNetworks;
+  const isDisabled = count === 0 || count > maxNetworks || isNavigating;
 
   const handleClick = () => {
-    if (isDisabled) return;
+    if (count === 0 || count > maxNetworks) return;
 
+    setIsNavigating(true);
     const networksParam = Array.from(selectedNetworks).join(",");
     router.push(`/${countryCode}?networks=${encodeURIComponent(networksParam)}`);
   };
@@ -40,12 +43,21 @@ export function ShowOnMapButton({
         }
       `}
     >
-      <MapIcon className="w-5 h-5" />
-      {count === 0
-        ? "Select networks to view on map"
-        : count === 1
-          ? "Show 1 network on map"
-          : `Show ${count} networks on map`}
+      {isNavigating ? (
+        <>
+          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          Loading map...
+        </>
+      ) : (
+        <>
+          <MapIcon className="w-5 h-5" />
+          {count === 0
+            ? "Select networks to view on map"
+            : count === 1
+              ? "Show 1 network on map"
+              : `Show ${count} networks on map`}
+        </>
+      )}
     </button>
   );
 }

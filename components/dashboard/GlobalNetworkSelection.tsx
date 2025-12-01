@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { XMarkIcon, MapIcon } from "@heroicons/react/24/outline";
 import type { NetworkName, CountryCode } from "@/types";
@@ -23,11 +24,14 @@ export function GlobalNetworkSelection({
   parseSelectionKey,
 }: GlobalNetworkSelectionProps) {
   const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
   const count = selectedKeys.size;
-  const isDisabled = count === 0;
+  const isDisabled = count === 0 || isNavigating;
 
   const handleShowOnMap = () => {
-    if (isDisabled) return;
+    if (count === 0) return;
+
+    setIsNavigating(true);
 
     // Group networks by country
     const networksByCountry = new Map<CountryCode, NetworkName[]>();
@@ -114,17 +118,27 @@ export function GlobalNetworkSelection({
               }
             `}
           >
-            <MapIcon className="w-4 h-4" />
-            <span className="hidden sm:inline">
-              {count === 0
-                ? "Select networks"
-                : count === 1
-                ? "Show on Map"
-                : `Show ${count} on Map`}
-            </span>
-            <span className="sm:hidden">
-              {count === 0 ? "Select" : "View"}
-            </span>
+            {isNavigating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="hidden sm:inline">Loading...</span>
+                <span className="sm:hidden">...</span>
+              </>
+            ) : (
+              <>
+                <MapIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {count === 0
+                    ? "Select networks"
+                    : count === 1
+                    ? "Show on Map"
+                    : `Show ${count} on Map`}
+                </span>
+                <span className="sm:hidden">
+                  {count === 0 ? "Select" : "View"}
+                </span>
+              </>
+            )}
           </button>
         </div>
       </div>
