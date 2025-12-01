@@ -378,16 +378,14 @@ export async function POST(request: Request) {
     const affectedCountries = Object.keys(summary);
     console.log(`[Import] Invalidating cache for countries:`, affectedCountries);
 
-    // Invalidate country-specific caches (use cache directive)
+    // Invalidate country-specific caches
     for (const country of affectedCountries) {
       // Invalidate route-level cache
       revalidatePath(`/${country}`, "page");
-      // Invalidate country-specific data caches (Next.js 16 "use cache")
-      revalidateTag(`locations-${country}`, "max");
-      revalidateTag(`stats-${country}`, "max");
     }
 
-    // Invalidate global cache tags (Next.js 16 "use cache")
+    // Invalidate data cache tags (used by unstable_cache)
+    // Using "max" profile for stale-while-revalidate semantics
     revalidateTag("locations", "max");
     revalidateTag("stats", "max");
     revalidateTag("global-stats", "max");

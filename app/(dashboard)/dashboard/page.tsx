@@ -4,35 +4,8 @@ import Link from "next/link";
 import { getCachedCountryIndustryBreakdown } from "@/lib/supabase/cached-queries";
 import { COUNTRY_LIST } from "@/lib/data/countries";
 import { Map, Upload, BarChart3, ArrowRight } from "lucide-react";
-import { Suspense } from "react";
 
-// Loading fallback component
-function DashboardLoading() {
-  return (
-    <div className="h-full overflow-auto">
-      <div className="mx-auto max-w-5xl px-6 py-8 animate-pulse">
-        <div className="mb-8">
-          <div className="h-8 w-64 bg-muted rounded" />
-          <div className="h-4 w-96 bg-muted/50 rounded mt-2" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 bg-muted rounded-xl" />
-          ))}
-        </div>
-        <div className="h-6 w-32 bg-muted rounded mb-4" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-40 bg-muted rounded-xl" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Dashboard content component with auth check (wrapped in Suspense)
-async function DashboardContent() {
+export default async function DashboardPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -233,13 +206,5 @@ async function DashboardContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={<DashboardLoading />}>
-      <DashboardContent />
-    </Suspense>
   );
 }

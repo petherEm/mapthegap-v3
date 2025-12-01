@@ -8,7 +8,6 @@ import {
   getCachedDensityByCity,
   getCachedNetworkComparison,
 } from "@/lib/supabase/cached-queries";
-import { Suspense } from "react";
 
 // Generate static params for all countries - enables ISR with caching
 export async function generateStaticParams() {
@@ -23,29 +22,7 @@ interface StatsPageProps {
   }>;
 }
 
-// Loading fallback component
-function StatsLoading() {
-  return (
-    <div className="animate-pulse space-y-6 p-6">
-      <div className="h-8 w-64 bg-muted rounded" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 bg-muted rounded-xl" />
-        ))}
-      </div>
-      <div className="h-64 bg-muted rounded-xl" />
-    </div>
-  );
-}
-
-// Stats content component with auth check (wrapped in Suspense)
-// Must receive params as Promise and await inside
-async function StatsContent({
-  params,
-}: {
-  params: Promise<{ country: string }>;
-}) {
-  // Await params inside Suspense boundary
+export default async function StatsPage({ params }: StatsPageProps) {
   const { country: countryParam } = await params;
 
   // Authenticate
@@ -90,13 +67,5 @@ async function StatsContent({
       densityData={densityData}
       comparisonData={comparisonData}
     />
-  );
-}
-
-export default function StatsPage({ params }: StatsPageProps) {
-  return (
-    <Suspense fallback={<StatsLoading />}>
-      <StatsContent params={params} />
-    </Suspense>
   );
 }

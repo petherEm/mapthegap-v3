@@ -1,112 +1,70 @@
-"use cache";
-
 /**
  * Cached Data Access Layer for Server Components
  *
- * This file uses Next.js 16's "use cache" directive for automatic caching.
- * IMPORTANT: Only import this file in Server Components, NOT Client Components.
- *
- * Cache invalidation: Call revalidateTag('locations') or revalidateTag('locations-{country}')
- * after data imports to refresh the cache.
+ * Uses Next.js unstable_cache for data caching with tag-based revalidation.
+ * Call revalidateTag('locations') or revalidateTag('stats') after data imports.
  */
 
-import { cacheLife, cacheTag } from "next/cache";
+import { unstable_cache } from "next/cache";
 import type { Location, CountryCode, IndustryBreakdown, IndustryCategory, NetworkInIndustry } from "@/types";
 import { createCacheClient } from "./cache-client";
 import { getIndustryIcon, getIndustryLabel } from "@/lib/data/industries";
 import { normalizeCityName } from "@/lib/utils/normalize";
 
+// Cache duration: 6 hours (21600 seconds)
+const CACHE_REVALIDATE = 21600;
+
 // ============================================
 // CACHED LOCATION QUERIES
 // ============================================
 
+// Helper function for fetching locations
+async function fetchLocationsByCountry(countryCode: CountryCode): Promise<Location[]> {
+  const supabase = createCacheClient();
+
+  const PAGE_SIZE = 1000;
+  let allLocations: Location[] = [];
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from("locations")
+      .select("*")
+      .eq("country", countryCode)
+      .eq("is_active", true)
+      .order("city")
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+    if (error) {
+      throw error;
+    }
+
+    if (data && data.length > 0) {
+      allLocations = [...allLocations, ...data];
+      hasMore = data.length === PAGE_SIZE;
+      page++;
+    } else {
+      hasMore = false;
+    }
+  }
+
+  return allLocations as Location[];
+}
+
 /**
  * Get all locations for a country (cached for 6 hours)
- * This is the main function for map pages
  */
-export async function getCachedLocationsByCountry(
-  countryCode: CountryCode
-): Promise<Location[]> {
-  // Apply cache profile and tags
-  cacheLife("locations");
-  cacheTag("locations", `locations-${countryCode}`);
-
-  const supabase = createCacheClient();
-
-  const PAGE_SIZE = 1000;
-  let allLocations: Location[] = [];
-  let page = 0;
-  let hasMore = true;
-
-  while (hasMore) {
-    const { data, error } = await supabase
-      .from("locations")
-      .select("*")
-      .eq("country", countryCode)
-      .eq("is_active", true)
-      .order("city")
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
-    if (error) {
-      throw error;
-    }
-
-    if (data && data.length > 0) {
-      allLocations = [...allLocations, ...data];
-      hasMore = data.length === PAGE_SIZE;
-      page++;
-    } else {
-      hasMore = false;
-    }
+export const getCachedLocationsByCountry = unstable_cache(
+  async (countryCode: CountryCode) => {
+    return fetchLocationsByCountry(countryCode);
+  },
+  ["locations-by-country"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["locations"],
   }
-
-  return allLocations as Location[];
-}
-
-/**
- * Get locations filtered by country and specific networks (cached for 6 hours)
- * Used when user selects specific networks to view
- */
-export async function getCachedLocationsByCountryAndNetworks(
-  countryCode: CountryCode,
-  networkNames: string[]
-): Promise<Location[]> {
-  // Apply cache profile and tags
-  cacheLife("locations");
-  cacheTag("locations", `locations-${countryCode}`);
-
-  const supabase = createCacheClient();
-
-  const PAGE_SIZE = 1000;
-  let allLocations: Location[] = [];
-  let page = 0;
-  let hasMore = true;
-
-  while (hasMore) {
-    const { data, error } = await supabase
-      .from("locations")
-      .select("*")
-      .eq("country", countryCode)
-      .in("network_name", networkNames)
-      .eq("is_active", true)
-      .order("city")
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
-    if (error) {
-      throw error;
-    }
-
-    if (data && data.length > 0) {
-      allLocations = [...allLocations, ...data];
-      hasMore = data.length === PAGE_SIZE;
-      page++;
-    } else {
-      hasMore = false;
-    }
-  }
-
-  return allLocations as Location[];
-}
+);
 
 // ============================================
 // CACHED STATISTICS QUERIES
@@ -127,15 +85,8 @@ export interface CountryStatsOverview {
   }>;
 }
 
-/**
- * Get statistics overview for a country (cached for 6 hours)
- */
-export async function getCachedCountryStatsOverview(
-  countryCode: CountryCode
-): Promise<CountryStatsOverview> {
-  cacheLife("stats");
-  cacheTag("stats", `stats-${countryCode}`);
-
+// Helper function for stats overview
+async function fetchCountryStatsOverview(countryCode: CountryCode): Promise<CountryStatsOverview> {
   const supabase = createCacheClient();
 
   const PAGE_SIZE = 1000;
@@ -215,6 +166,20 @@ export async function getCachedCountryStatsOverview(
   };
 }
 
+/**
+ * Get statistics overview for a country (cached for 6 hours)
+ */
+export const getCachedCountryStatsOverview = unstable_cache(
+  async (countryCode: CountryCode) => {
+    return fetchCountryStatsOverview(countryCode);
+  },
+  ["country-stats-overview"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["stats"],
+  }
+);
+
 // ============================================
 // CACHED INDUSTRY BREAKDOWN
 // ============================================
@@ -226,16 +191,8 @@ type IndustryStatsRow = {
   networks: Array<{ name: string; count: number }>;
 };
 
-/**
- * Get industry breakdown for a country (cached for 6 hours)
- * Used on dashboard to show network selection by industry
- */
-export async function getCachedCountryIndustryBreakdown(
-  countryCode: CountryCode
-): Promise<IndustryBreakdown[]> {
-  cacheLife("stats");
-  cacheTag("stats", `stats-${countryCode}`, "industry-stats");
-
+// Helper function for industry breakdown
+async function fetchCountryIndustryBreakdown(countryCode: CountryCode): Promise<IndustryBreakdown[]> {
   const supabase = createCacheClient();
 
   // Try SQL function first (more efficient)
@@ -246,7 +203,7 @@ export async function getCachedCountryIndustryBreakdown(
   if (error) {
     // Fallback to client-side aggregation
     console.warn("SQL function not found, falling back to client-side aggregation:", error.message);
-    return getCachedIndustryBreakdownFallback(countryCode);
+    return fetchIndustryBreakdownFallback(countryCode);
   }
 
   if (!data || data.length === 0) {
@@ -269,9 +226,7 @@ export async function getCachedCountryIndustryBreakdown(
 }
 
 // Fallback function - uses client-side aggregation if SQL function not available
-async function getCachedIndustryBreakdownFallback(
-  countryCode: CountryCode
-): Promise<IndustryBreakdown[]> {
+async function fetchIndustryBreakdownFallback(countryCode: CountryCode): Promise<IndustryBreakdown[]> {
   const supabase = createCacheClient();
 
   const PAGE_SIZE = 1000;
@@ -347,8 +302,98 @@ async function getCachedIndustryBreakdownFallback(
   return industries;
 }
 
+/**
+ * Get industry breakdown for a country (cached for 6 hours)
+ */
+export const getCachedCountryIndustryBreakdown = unstable_cache(
+  async (countryCode: CountryCode) => {
+    return fetchCountryIndustryBreakdown(countryCode);
+  },
+  ["country-industry-breakdown"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["stats", "industry-stats"],
+  }
+);
+
 // ============================================
-// CACHED COUNTRY/NETWORK STATISTICS (Global)
+// CACHED DENSITY AND NETWORK COMPARISON (PostGIS)
+// ============================================
+
+export interface DensityData {
+  city: string;
+  location_count: number;
+  density_per_sqkm: number;
+  networks: string[];
+}
+
+export interface NetworkComparisonData {
+  network_name: string;
+  location_count: number;
+  coverage_area_sqkm: number;
+  market_share_pct: number;
+}
+
+// Helper for density by city
+async function fetchDensityByCity(countryCode: CountryCode): Promise<DensityData[]> {
+  const supabase = createCacheClient();
+
+  const { data, error } = await supabase.rpc("get_density_by_city", {
+    p_country: countryCode,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []) as DensityData[];
+}
+
+/**
+ * Get location density by city (cached for 6 hours)
+ */
+export const getCachedDensityByCity = unstable_cache(
+  async (countryCode: CountryCode) => {
+    return fetchDensityByCity(countryCode);
+  },
+  ["density-by-city"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["stats"],
+  }
+);
+
+// Helper for network comparison
+async function fetchNetworkComparison(countryCode: CountryCode): Promise<NetworkComparisonData[]> {
+  const supabase = createCacheClient();
+
+  const { data, error } = await supabase.rpc("compare_network_coverage", {
+    p_country: countryCode,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []) as NetworkComparisonData[];
+}
+
+/**
+ * Get network comparison data (cached for 6 hours)
+ */
+export const getCachedNetworkComparison = unstable_cache(
+  async (countryCode: CountryCode) => {
+    return fetchNetworkComparison(countryCode);
+  },
+  ["network-comparison"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["stats"],
+  }
+);
+
+// ============================================
+// CACHED GLOBAL STATISTICS
 // ============================================
 
 export interface CountryNetworkStat {
@@ -358,14 +403,8 @@ export interface CountryNetworkStat {
   last_updated: string;
 }
 
-/**
- * Get statistics for all countries and networks (cached for 6 hours)
- * Used for global dashboard overview
- */
-export async function getCachedCountryNetworkStatistics(): Promise<CountryNetworkStat[]> {
-  cacheLife("stats");
-  cacheTag("stats", "global-stats");
-
+// Helper for global stats
+async function fetchCountryNetworkStatistics(): Promise<CountryNetworkStat[]> {
   const supabase = createCacheClient();
 
   const PAGE_SIZE = 1000;
@@ -428,66 +467,16 @@ export async function getCachedCountryNetworkStatistics(): Promise<CountryNetwor
   return stats;
 }
 
-// ============================================
-// CACHED DENSITY AND NETWORK COMPARISON (PostGIS)
-// ============================================
-
-export interface DensityData {
-  city: string;
-  location_count: number;
-  density_per_sqkm: number;
-  networks: string[];
-}
-
-export interface NetworkComparisonData {
-  network_name: string;
-  location_count: number;
-  coverage_area_sqkm: number;
-  market_share_pct: number;
-}
-
 /**
- * Get location density by city (cached for 6 hours)
- * Uses PostGIS RPC function for spatial analysis
+ * Get statistics for all countries and networks (cached for 6 hours)
  */
-export async function getCachedDensityByCity(
-  countryCode: CountryCode
-): Promise<DensityData[]> {
-  cacheLife("stats");
-  cacheTag("stats", `stats-${countryCode}`);
-
-  const supabase = createCacheClient();
-
-  const { data, error } = await supabase.rpc("get_density_by_city", {
-    p_country: countryCode,
-  });
-
-  if (error) {
-    throw error;
+export const getCachedCountryNetworkStatistics = unstable_cache(
+  async () => {
+    return fetchCountryNetworkStatistics();
+  },
+  ["country-network-statistics"],
+  {
+    revalidate: CACHE_REVALIDATE,
+    tags: ["stats", "global-stats"],
   }
-
-  return (data || []) as DensityData[];
-}
-
-/**
- * Get network comparison data (cached for 6 hours)
- * Uses PostGIS RPC function for coverage analysis
- */
-export async function getCachedNetworkComparison(
-  countryCode: CountryCode
-): Promise<NetworkComparisonData[]> {
-  cacheLife("stats");
-  cacheTag("stats", `stats-${countryCode}`);
-
-  const supabase = createCacheClient();
-
-  const { data, error } = await supabase.rpc("compare_network_coverage", {
-    p_country: countryCode,
-  });
-
-  if (error) {
-    throw error;
-  }
-
-  return (data || []) as NetworkComparisonData[];
-}
+);
