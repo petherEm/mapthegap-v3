@@ -8,7 +8,7 @@ import { Button } from "./button";
 import { ModeToggle } from "./mode-toggle";
 
 export function DashboardNavbar() {
-  const { user, loading } = useAuth();
+  const { user, loading, isSuperAdmin } = useAuth();
 
   return (
     <nav className="w-full border-b border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-sm">
@@ -26,12 +26,14 @@ export function DashboardNavbar() {
               >
                 Dashboard
               </Link>
-              <Link
-                href="/import"
-                className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors"
-              >
-                Import
-              </Link>
+              {isSuperAdmin && (
+                <Link
+                  href="/import"
+                  className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors"
+                >
+                  Import
+                </Link>
+              )}
               <Link
                 href="/analytics"
                 className="text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50 transition-colors"

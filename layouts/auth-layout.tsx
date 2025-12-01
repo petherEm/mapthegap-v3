@@ -18,15 +18,15 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                 "font-semibold text-xl text-center text-muted dark:text-muted-dark"
               )}
             >
-              Every AI is used by thousands of users
+              MapTheGap is trusted by businesses worldwide
             </p>
             <p
               className={cn(
                 "font-normal text-base text-center text-neutral-500 dark:text-neutral-400 mt-8"
               )}
             >
-              With lots of AI applications around, Everything AI stands out with
-              its state of the art Shitposting capabilities.
+              Discover network coverage gaps and optimize your location
+              strategies with powerful mapping and analytics tools.
             </p>
           </div>
           <HorizontalGradient className="top-20" />

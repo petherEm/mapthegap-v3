@@ -211,3 +211,45 @@ html {
 .animate-fade-in {
   animation: fade-in 1s ease forwards;
 }
+
+/* Mapbox popup styling overrides */
+.mapboxgl-popup-content {
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.mapboxgl-popup-tip {
+  display: none !important;
+}
+
+.mapboxgl-popup-close-button {
+  display: none !important;
+}
+
+/* Mapbox control styling for dark theme */
+.mapboxgl-ctrl-group {
+  background: #171717 !important;
+  border: 1px solid #262626 !important;
+}
+
+.mapboxgl-ctrl-group button {
+  background-color: transparent !important;
+}
+
+.mapboxgl-ctrl-group button + button {
+  border-top: 1px solid #262626 !important;
+}
+
+.mapboxgl-ctrl-icon {
+  filter: invert(1) !important;
+}
+
+.mapboxgl-ctrl-attrib {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.mapboxgl-ctrl-attrib a {
+  color: #a3a3a3 !important;
+}

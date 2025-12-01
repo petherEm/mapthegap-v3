@@ -11,8 +11,8 @@ export const Testimonials = () => {
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Loved by people all over the universe</Heading>
       <Subheading className="text-center max-w-lg mx-auto">
-        Every AI is used by millions of people around the globe.Our APIs have
-        fan bases and people fight for us over twitter.
+        MapTheGap is used by businesses worldwide to discover network coverage
+        gaps and optimize their location strategies.
       </Subheading>
       <TestimonialGrid />
     </div>
@@ -30,7 +30,7 @@ const testimonials = [
   {
     name: "Manu Arora",
     quote:
-      "What a fantastic AI Every AI is, I just love it. It has completely transformed the way I approach problems and develop solutions.",
+      "MapTheGap has been fantastic for our expansion planning. It has completely transformed the way we approach market analysis and location decisions.",
     src: "https://i.pravatar.cc/150?img=1",
     designation: "Tech Innovator & Entrepreneur",
   },

@@ -20,10 +20,6 @@ export const Companies = () => {
         title: "meta",
         src: "/logos/meta.png",
       },
-      {
-        title: "onlyfans",
-        src: "/logos/onlyfans.png",
-      },
     ],
     [
       {
@@ -37,10 +33,6 @@ export const Companies = () => {
       {
         title: "meta second",
         src: "/logos/meta.png",
-      },
-      {
-        title: "onlyfans second",
-        src: "/logos/onlyfans.png",
       },
     ],
   ]);
@@ -69,7 +61,7 @@ export const Companies = () => {
     <div className="relative z-20 py-10 md:py-40">
       <Heading as="h2">Trusted by the best companies</Heading>
       <Subheading className="text-center ">
-        Every AI is the choice of all the fortune 500 companies.
+        MapTheGap is the choice of leading enterprises worldwide.
       </Subheading>
 
       <div className="flex gap-10 flex-wrap justify-center md:gap-40 relative h-full w-full mt-20">

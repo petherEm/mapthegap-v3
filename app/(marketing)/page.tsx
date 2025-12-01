@@ -17,14 +17,14 @@ export default function Home() {
         <Hero />
         <Companies />
         <GridFeatures />
-        <Features />
+        {/* <Features /> */}
         <Testimonials />
       </Container>
       <div className="relative">
         <div className="absolute inset-0 h-full w-full overflow-hidden">
           <Background />
         </div>
-        <CTA />
+        {/* <CTA /> */}
       </div>
     </div>
   );

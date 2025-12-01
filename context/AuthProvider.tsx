@@ -1,16 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { AuthContext } from "./AuthContext";
 import { createClient } from "@/lib/supabase/client";
+import { getUserRole, isSuperAdmin as checkIsSuperAdmin } from "@/lib/auth/roles";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
+
+  // Compute role and superadmin status from user metadata
+  const role = useMemo(() => getUserRole(user), [user]);
+  const isSuperAdmin = useMemo(() => checkIsSuperAdmin(user), [user]);
 
   useEffect(() => {
     // Get initial session
@@ -44,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut }}>
+    <AuthContext.Provider value={{ user, loading, role, isSuperAdmin, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,13 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { DesktopNavbar } from "./desktop-navbar";
 import { MobileNavbar } from "./mobile-navbar";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { isSuperAdmin } from "@/lib/auth/roles";
 import type { User } from "@supabase/supabase-js";
 
-const defaultNavItems = [
+interface NavItem {
+  title: string;
+  link: string;
+  superAdminOnly?: boolean;
+}
+
+const defaultNavItems: NavItem[] = [
   {
     title: "Pricing",
     link: "/pricing",
@@ -18,7 +25,7 @@ const defaultNavItems = [
   },
 ];
 
-const dashboardNavItems = [
+const dashboardNavItems: NavItem[] = [
   {
     title: "Dashboard",
     link: "/dashboard",
@@ -26,6 +33,7 @@ const dashboardNavItems = [
   {
     title: "Import",
     link: "/import",
+    superAdminOnly: true, // Only visible to superadmins
   },
   {
     title: "Analytics",
@@ -45,6 +53,9 @@ export function NavBar({ variant = "default" }: NavBarProps) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const supabase = createClient();
+
+  // Check if current user is superadmin
+  const userIsSuperAdmin = useMemo(() => isSuperAdmin(user), [user]);
 
   useEffect(() => {
     // Get initial session
@@ -75,7 +86,11 @@ export function NavBar({ variant = "default" }: NavBarProps) {
     router.refresh();
   };
 
-  const navItems = variant === "dashboard" ? dashboardNavItems : defaultNavItems;
+  // Filter navigation items based on user role
+  const baseNavItems = variant === "dashboard" ? dashboardNavItems : defaultNavItems;
+  const navItems = baseNavItems.filter(
+    (item) => !item.superAdminOnly || userIsSuperAdmin
+  );
 
   return (
     <motion.nav

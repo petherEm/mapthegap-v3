@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { IndustryBreakdown, CountryCode } from "@/types";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "@/context/AuthContext";
 
 interface IndustryAccordionProps {
   industries: IndustryBreakdown[];
@@ -15,6 +16,7 @@ export function IndustryAccordion({
   countryCode,
 }: IndustryAccordionProps) {
   const router = useRouter();
+  const { isSuperAdmin } = useAuth();
   const [expandedIndustry, setExpandedIndustry] = useState<string | null>(null);
 
   if (industries.length === 0) {
@@ -23,12 +25,14 @@ export function IndustryAccordion({
         <p className="text-neutral-400">
           No location data available for this country yet.
         </p>
-        <button
-          onClick={() => router.push("/import")}
-          className="mt-4 text-violet-400 hover:text-violet-300 transition-colors"
-        >
-          Import Locations →
-        </button>
+        {isSuperAdmin && (
+          <button
+            onClick={() => router.push("/import")}
+            className="mt-4 text-violet-400 hover:text-violet-300 transition-colors"
+          >
+            Import Locations →
+          </button>
+        )}
       </div>
     );
   }

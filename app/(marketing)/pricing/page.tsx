@@ -8,9 +8,9 @@ import { Companies } from "@/components/companies";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing - Everything AI",
+  title: "Pricing - MapTheGap",
   description:
-    "Everything AI is a platform that provides a wide range of AI tools and services to help you stay on top of your business. Generate images, text and everything else that you need to get your business off the ground.",
+    "MapTheGap helps you discover network coverage gaps and optimize location strategies. Choose a plan that fits your needs and start mapping today.",
   openGraph: {
     images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
   },
@@ -24,9 +24,9 @@ export default function PricingPage() {
         <div className="relative z-20 py-10 md:pt-40">
           <Heading as="h1">Simple pricing for your ease</Heading>
           <Subheading className="text-center">
-            Every AI offers a wide range of services. You can choose the one
-            that suits your needs. Select from your favourite plan and get
-            started instantly.
+            MapTheGap offers flexible plans for businesses of all sizes. Choose
+            the one that suits your needs and start discovering coverage gaps
+            instantly.
           </Subheading>
         </div>
         <Pricing />

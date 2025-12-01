@@ -340,13 +340,13 @@ function MapContainer({
             latitude={selectedLocation.lat}
             longitude={selectedLocation.lng}
             onClose={handleClosePopup}
-            closeButton={true}
+            closeButton={false}
             closeOnClick={false}
             anchor="bottom"
             offset={20}
             className="location-popup"
           >
-            <LocationPopup location={selectedLocation} />
+            <LocationPopup location={selectedLocation} onClose={handleClosePopup} />
           </Popup>
         )}
       </MapboxMap>

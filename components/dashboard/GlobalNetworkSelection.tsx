@@ -1,0 +1,133 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { XMarkIcon, MapIcon } from "@heroicons/react/24/outline";
+import type { NetworkName, CountryCode } from "@/types";
+
+// Selection key format: "countryCode:networkName"
+type SelectionKey = `${CountryCode}:${NetworkName}`;
+
+interface GlobalNetworkSelectionProps {
+  selectedKeys: Set<SelectionKey>;
+  onRemoveNetwork: (key: SelectionKey) => void;
+  maxNetworks: number;
+  countryNameMap: Map<CountryCode, string>;
+  parseSelectionKey: (key: SelectionKey) => { countryCode: CountryCode; network: NetworkName };
+}
+
+export function GlobalNetworkSelection({
+  selectedKeys,
+  onRemoveNetwork,
+  maxNetworks,
+  countryNameMap,
+  parseSelectionKey,
+}: GlobalNetworkSelectionProps) {
+  const router = useRouter();
+  const count = selectedKeys.size;
+  const isDisabled = count === 0;
+
+  const handleShowOnMap = () => {
+    if (isDisabled) return;
+
+    // Group networks by country
+    const networksByCountry = new Map<CountryCode, NetworkName[]>();
+
+    selectedKeys.forEach((key) => {
+      const { countryCode, network } = parseSelectionKey(key);
+      const existing = networksByCountry.get(countryCode) || [];
+      networksByCountry.set(countryCode, [...existing, network]);
+    });
+
+    // For now, navigate to the country with most selected networks
+    // In future, could show a multi-country view
+    let targetCountry: CountryCode | null = null;
+    let maxCount = 0;
+
+    networksByCountry.forEach((networks, country) => {
+      if (networks.length > maxCount) {
+        maxCount = networks.length;
+        targetCountry = country;
+      }
+    });
+
+    if (targetCountry) {
+      const networksForCountry = networksByCountry.get(targetCountry) || [];
+      const networksParam = networksForCountry.join(",");
+      router.push(`/${targetCountry}?networks=${encodeURIComponent(networksParam)}`);
+    }
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg">
+      <div className="mx-auto max-w-4xl px-4 py-3">
+        <div className="flex items-center gap-4">
+          {/* Selected Networks Display */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-muted-foreground flex-shrink-0">
+                Selected ({count}/{maxNetworks}):
+              </span>
+
+              {count === 0 ? (
+                <span className="text-sm text-muted-foreground/60 italic">
+                  Click networks above to select
+                </span>
+              ) : (
+                <div className="flex flex-wrap gap-1.5">
+                  {Array.from(selectedKeys).map((key) => {
+                    const { countryCode, network } = parseSelectionKey(key);
+                    const countryName = countryNameMap.get(countryCode) || countryCode;
+                    return (
+                      <span
+                        key={key}
+                        className="inline-flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-700 dark:text-violet-300 rounded-md text-xs font-medium"
+                      >
+                        <span className="truncate max-w-[150px]">
+                          {network}
+                          <span className="text-violet-500/70 ml-1">({countryName})</span>
+                        </span>
+                        <button
+                          onClick={() => onRemoveNetwork(key)}
+                          className="p-0.5 hover:bg-violet-500/20 rounded transition-colors"
+                          aria-label={`Remove ${network} from ${countryName}`}
+                        >
+                          <XMarkIcon className="w-3 h-3" />
+                        </button>
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Show on Map Button */}
+          <button
+            onClick={handleShowOnMap}
+            disabled={isDisabled}
+            className={`
+              flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all
+              ${
+                isDisabled
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
+                  : "bg-violet-500 hover:bg-violet-600 text-white shadow-sm hover:shadow"
+              }
+            `}
+          >
+            <MapIcon className="w-4 h-4" />
+            <span className="hidden sm:inline">
+              {count === 0
+                ? "Select networks"
+                : count === 1
+                ? "Show on Map"
+                : `Show ${count} on Map`}
+            </span>
+            <span className="sm:hidden">
+              {count === 0 ? "Select" : "View"}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

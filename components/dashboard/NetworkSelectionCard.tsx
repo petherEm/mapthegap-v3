@@ -6,6 +6,7 @@ import type { IndustryBreakdown, NetworkName, CountryCode } from "@/types";
 import { NetworkTagGrid } from "./NetworkTagGrid";
 import { SelectedNetworksZone } from "./SelectedNetworksZone";
 import { ShowOnMapButton } from "./ShowOnMapButton";
+import { useAuth } from "@/context/AuthContext";
 
 interface NetworkSelectionCardProps {
   industries: IndustryBreakdown[];
@@ -19,6 +20,7 @@ export function NetworkSelectionCard({
   countryCode,
 }: NetworkSelectionCardProps) {
   const router = useRouter();
+  const { isSuperAdmin } = useAuth();
   const [selectedNetworks, setSelectedNetworks] = useState<Set<NetworkName>>(
     new Set()
   );
@@ -45,12 +47,14 @@ export function NetworkSelectionCard({
         <p className="text-neutral-600 dark:text-neutral-400 mb-4">
           No location data available for this country yet.
         </p>
-        <button
-          onClick={() => router.push("/import")}
-          className="text-violet-600 hover:text-violet-500 dark:text-violet-400 dark:hover:text-violet-300 transition-colors"
-        >
-          Import Locations →
-        </button>
+        {isSuperAdmin && (
+          <button
+            onClick={() => router.push("/import")}
+            className="text-violet-600 hover:text-violet-500 dark:text-violet-400 dark:hover:text-violet-300 transition-colors"
+          >
+            Import Locations →
+          </button>
+        )}
       </div>
     );
   }

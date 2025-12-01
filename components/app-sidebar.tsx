@@ -35,9 +35,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
+import type { LucideIcon } from "lucide-react";
+
+interface NavItem {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  superAdminOnly?: boolean;
+}
 
 // Main navigation items
-const mainNavItems = [
+const mainNavItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/dashboard",
@@ -52,6 +60,7 @@ const mainNavItems = [
     title: "Import",
     href: "/import",
     icon: Upload,
+    superAdminOnly: true, // Only visible to superadmins
   },
   {
     title: "Analytics",
@@ -81,7 +90,12 @@ const settingsNavItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { user, isSuperAdmin, signOut } = useAuth();
+
+  // Filter navigation items based on user role
+  const visibleNavItems = mainNavItems.filter(
+    (item) => !item.superAdminOnly || isSuperAdmin
+  );
 
   const isActive = (href: string): boolean => {
     if (href === "/dashboard") {
@@ -113,7 +127,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => (
+              {visibleNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild

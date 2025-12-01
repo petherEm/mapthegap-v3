@@ -44,8 +44,8 @@ export default function SettingsLayout({
       <div className="mx-auto max-w-5xl px-6 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-neutral-50">Settings</h1>
-          <p className="mt-1 text-neutral-400">
+          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">Settings</h1>
+          <p className="mt-1 text-neutral-600 dark:text-neutral-400">
             Manage your account and preferences
           </p>
         </div>
@@ -63,8 +63,8 @@ export default function SettingsLayout({
                       className={cn(
                         "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                         isActive
-                          ? "bg-violet-500/10 text-violet-400"
-                          : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+                          ? "bg-violet-500/10 text-violet-600 dark:text-violet-400"
+                          : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-200"
                       )}
                     >
                       <item.icon className="h-4 w-4" />

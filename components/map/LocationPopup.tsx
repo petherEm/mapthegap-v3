@@ -7,19 +7,32 @@ import {
   BuildingOffice2Icon,
   PhoneIcon,
   InformationCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
 type LocationPopupProps = {
   location: Location;
+  onClose?: () => void;
 };
 
-export function LocationPopup({ location }: LocationPopupProps) {
+export function LocationPopup({ location, onClose }: LocationPopupProps) {
   const network = NETWORKS[location.network_name];
 
   return (
-    <div className="min-w-[280px] max-w-[320px] p-4 bg-neutral-900 rounded-lg">
+    <div className="min-w-[280px] max-w-[320px] p-4 bg-neutral-900 rounded-lg border border-neutral-800 shadow-xl relative">
+      {/* Close Button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 p-1 rounded-md hover:bg-neutral-800 transition-colors group"
+          aria-label="Close popup"
+        >
+          <XMarkIcon className="w-4 h-4 text-neutral-500 group-hover:text-neutral-300" />
+        </button>
+      )}
+
       {/* Network Badge */}
-      <div className="mb-3">
+      <div className="mb-3 pr-6">
         <div className="flex items-center gap-2">
           <span
             className="w-3 h-3 rounded-full shrink-0"

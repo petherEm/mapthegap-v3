@@ -15,34 +15,34 @@ async function ProfileContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-neutral-50">Profile</h2>
-        <p className="text-sm text-neutral-400">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">Profile</h2>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
           Manage your account information
         </p>
       </div>
 
-      <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-5 space-y-4">
+      <div className="bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-400 mb-1">
+          <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
             Email Address
           </label>
-          <p className="text-neutral-50">{user.email}</p>
+          <p className="text-neutral-900 dark:text-neutral-50">{user.email}</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-400 mb-1">
+          <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
             User ID
           </label>
-          <p className="text-neutral-50 font-mono text-xs bg-neutral-800 px-3 py-2 rounded">
+          <p className="text-neutral-900 dark:text-neutral-50 font-mono text-xs bg-neutral-100 dark:bg-neutral-800 px-3 py-2 rounded">
             {user.id}
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-400 mb-1">
+          <label className="block text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1">
             Account Created
           </label>
-          <p className="text-neutral-50">
+          <p className="text-neutral-900 dark:text-neutral-50">
             {user.created_at
               ? new Date(user.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -54,9 +54,9 @@ async function ProfileContent() {
         </div>
       </div>
 
-      <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-5">
-        <h3 className="font-medium text-neutral-50 mb-3">Update Profile</h3>
-        <p className="text-sm text-neutral-400 mb-4">
+      <div className="bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5">
+        <h3 className="font-medium text-neutral-900 dark:text-neutral-50 mb-3">Update Profile</h3>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
           Profile updates coming soon. You&apos;ll be able to update your name,
           avatar, and other details.
         </p>
@@ -75,12 +75,12 @@ function ProfileLoading() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="h-7 w-24 bg-neutral-800 rounded animate-pulse" />
-        <div className="h-5 w-48 bg-neutral-800 rounded animate-pulse mt-2" />
+        <div className="h-7 w-24 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse" />
+        <div className="h-5 w-48 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse mt-2" />
       </div>
-      <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-5 space-y-4">
-        <div className="h-16 bg-neutral-800 rounded animate-pulse" />
-        <div className="h-16 bg-neutral-800 rounded animate-pulse" />
+      <div className="bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5 space-y-4">
+        <div className="h-16 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse" />
+        <div className="h-16 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse" />
       </div>
     </div>
   );

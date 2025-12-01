@@ -44,8 +44,8 @@ export const Features = () => {
     <div className="relative z-20 py-10 lg:py-40 overflow-hidden">
       <Heading as="h2">Packed with thousands of features</Heading>
       <Subheading className="text-center ">
-        From Image generation to video generation, Everything AI has APIs for
-        literally everything. It can even create this website copy for you.
+        From interactive maps to detailed analytics, MapTheGap has tools for
+        discovering coverage gaps and optimizing your location strategies.
       </Subheading>
 
       <div className="relative">

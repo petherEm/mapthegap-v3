@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { COUNTRIES } from "@/lib/data/countries";
+import { isSuperAdmin } from "@/lib/auth/roles";
 import type { NetworkName, CountryCode, KnownNetworkName } from "@/types";
 
 // Map country codes from ISO to internal format
@@ -145,6 +146,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Unauthorized. Please log in to import data." },
         { status: 401 }
+      );
+    }
+
+    // Check if user has superadmin privileges
+    if (!isSuperAdmin(user)) {
+      return NextResponse.json(
+        { error: "Forbidden. Superadmin access required to import data." },
+        { status: 403 }
       );
     }
 

@@ -16,7 +16,6 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { IconBrandGithub } from "@tabler/icons-react";
 import Password from "./password";
 import { Button } from "./button";
 import { Logo } from "./Logo";
@@ -67,21 +66,6 @@ export function LoginForm() {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  async function handleGitHubSignIn() {
-    setError(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: `${window.location.origin}/callback`,
-      },
-    });
-
-    if (error) {
-      setError(error.message);
     }
   }
 
@@ -194,47 +178,22 @@ export function LoginForm() {
               </form>
             </div>
 
-            <div className="mt-10">
-              <div className="relative">
-                <div
-                  className="absolute inset-0 flex items-center"
-                  aria-hidden="true"
-                >
-                  <div className="w-full border-t border-neutral-300 dark:border-neutral-700" />
-                </div>
-                <div className="relative flex justify-center text-sm font-medium leading-6">
-                  <span className="bg-white px-6 text-neutral-400 dark:text-neutral-500 dark:bg-black">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-6 w-full flex items-center justify-center">
-                <Button onClick={handleGitHubSignIn} className="w-full py-1.5">
-                  <IconBrandGithub className="h-5 w-5" />
-                  <span className="text-sm font-semibold leading-6">
-                    Github
-                  </span>
-                </Button>
-              </div>
-
-              <p className="text-neutral-600 dark:text-neutral-400 text-sm text-center mt-8">
-                By clicking on sign in, you agree to our{" "}
-                <Link
-                  href="#"
-                  className="text-neutral-500 dark:text-neutral-300"
-                >
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  href="#"
-                  className="text-neutral-500 dark:text-neutral-300"
-                >
-                  Privacy Policy
-                </Link>
-              </p>
-            </div>
+            <p className="text-neutral-600 dark:text-neutral-400 text-sm text-center mt-8">
+              By clicking on sign in, you agree to our{" "}
+              <Link
+                href="#"
+                className="text-neutral-500 dark:text-neutral-300"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="#"
+                className="text-neutral-500 dark:text-neutral-300"
+              >
+                Privacy Policy
+              </Link>
+            </p>
           </div>
         </div>
       </div>

@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   title: "MapTheGap",
   description:
     "MapTheGap is a platform for mapping and visualizing location networks across multiple countries and industries.",
-  openGraph: {
-    images: ["https://ai-saas-template-aceternity.vercel.app/banner.png"],
-  },
 };
 
 export default function RootLayout({
