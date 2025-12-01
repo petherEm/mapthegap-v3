@@ -20,6 +20,8 @@ const CACHE_REVALIDATE = 21600;
 
 // Helper function for fetching locations
 async function fetchLocationsByCountry(countryCode: CountryCode): Promise<Location[]> {
+  // This log only appears when cache MISS (data actually fetched from Supabase)
+  console.log(`[Cache MISS] Fetching locations for ${countryCode} from Supabase...`);
   const supabase = createCacheClient();
 
   const PAGE_SIZE = 1000;
@@ -87,6 +89,7 @@ export interface CountryStatsOverview {
 
 // Helper function for stats overview
 async function fetchCountryStatsOverview(countryCode: CountryCode): Promise<CountryStatsOverview> {
+  console.log(`[Cache MISS] Fetching stats overview for ${countryCode} from Supabase...`);
   const supabase = createCacheClient();
 
   const PAGE_SIZE = 1000;
@@ -193,6 +196,7 @@ type IndustryStatsRow = {
 
 // Helper function for industry breakdown
 async function fetchCountryIndustryBreakdown(countryCode: CountryCode): Promise<IndustryBreakdown[]> {
+  console.log(`[Cache MISS] Fetching industry breakdown for ${countryCode} from Supabase...`);
   const supabase = createCacheClient();
 
   // Try SQL function first (more efficient)
