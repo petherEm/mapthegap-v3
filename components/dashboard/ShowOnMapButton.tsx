@@ -21,17 +21,32 @@ export function ShowOnMapButton({
   const count = selectedNetworks.size;
   const isDisabled = count === 0 || count > maxNetworks || isNavigating;
 
+  const getTargetUrl = () => {
+    if (count === 0 || count > maxNetworks) return null;
+    const networksParam = Array.from(selectedNetworks).join(",");
+    return `/${countryCode}?networks=${encodeURIComponent(networksParam)}`;
+  };
+
+  // Prefetch route on hover for faster navigation
+  const handleMouseEnter = () => {
+    const url = getTargetUrl();
+    if (url) {
+      router.prefetch(url);
+    }
+  };
+
   const handleClick = () => {
-    if (count === 0 || count > maxNetworks) return;
+    const url = getTargetUrl();
+    if (!url) return;
 
     setIsNavigating(true);
-    const networksParam = Array.from(selectedNetworks).join(",");
-    router.push(`/${countryCode}?networks=${encodeURIComponent(networksParam)}`);
+    router.push(url);
   };
 
   return (
     <button
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
       disabled={isDisabled}
       className={`
         w-full mt-4 px-6 py-3 rounded-lg font-semibold text-sm

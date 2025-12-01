@@ -1,11 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { getCountryIndustryBreakdown } from "@/lib/supabase/queries";
+import { getCachedCountryIndustryBreakdown } from "@/lib/supabase/cached-queries";
 import { MapsPageClient } from "@/components/dashboard/MapsPageClient";
 import { COUNTRY_LIST } from "@/lib/data/countries";
 import type { CountryDashboardStats } from "@/types";
 import { Suspense } from "react";
 
+// Maps content component with auth check (wrapped in Suspense)
 async function MapsContent() {
   const supabase = await createClient();
   const {
@@ -16,22 +17,30 @@ async function MapsContent() {
     redirect("/login");
   }
 
-  // Fetch industry breakdown for all countries
+  // Fetch industry breakdown for all countries (cached for 6 hours)
   const countryStats: CountryDashboardStats[] = await Promise.all(
     COUNTRY_LIST.map(async (country) => {
-      const { data: industries } = await getCountryIndustryBreakdown(
-        country.code
-      );
+      try {
+        const industries = await getCachedCountryIndustryBreakdown(country.code);
 
-      const totalLocations =
-        industries?.reduce((sum, ind) => sum + ind.count, 0) || 0;
+        const totalLocations =
+          industries?.reduce((sum, ind) => sum + ind.count, 0) || 0;
 
-      return {
-        country,
-        totalLocations,
-        industries: industries || [],
-        lastUpdated: new Date().toISOString(),
-      };
+        return {
+          country,
+          totalLocations,
+          industries: industries || [],
+          lastUpdated: new Date().toISOString(),
+        };
+      } catch (error) {
+        console.error(`Failed to fetch industry breakdown for ${country.code}:`, error);
+        return {
+          country,
+          totalLocations: 0,
+          industries: [],
+          lastUpdated: new Date().toISOString(),
+        };
+      }
     })
   );
 

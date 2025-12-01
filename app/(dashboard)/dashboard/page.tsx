@@ -1,11 +1,38 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getCountryIndustryBreakdown } from "@/lib/supabase/queries";
+import { getCachedCountryIndustryBreakdown } from "@/lib/supabase/cached-queries";
 import { COUNTRY_LIST } from "@/lib/data/countries";
 import { Map, Upload, BarChart3, ArrowRight } from "lucide-react";
+import { Suspense } from "react";
 
-export default async function DashboardPage() {
+// Loading fallback component
+function DashboardLoading() {
+  return (
+    <div className="h-full overflow-auto">
+      <div className="mx-auto max-w-5xl px-6 py-8 animate-pulse">
+        <div className="mb-8">
+          <div className="h-8 w-64 bg-muted rounded" />
+          <div className="h-4 w-96 bg-muted/50 rounded mt-2" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-24 bg-muted rounded-xl" />
+          ))}
+        </div>
+        <div className="h-6 w-32 bg-muted rounded mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-40 bg-muted rounded-xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Dashboard content component with auth check (wrapped in Suspense)
+async function DashboardContent() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -15,20 +42,24 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Get total stats
+  // Get total stats (cached for 6 hours)
   let totalLocations = 0;
   let totalNetworks = new Set<string>();
   let totalCountriesWithData = 0;
 
   await Promise.all(
     COUNTRY_LIST.map(async (country) => {
-      const { data: industries } = await getCountryIndustryBreakdown(country.code);
-      if (industries && industries.length > 0) {
-        totalCountriesWithData++;
-        industries.forEach((ind) => {
-          totalLocations += ind.count;
-          ind.networks.forEach((n) => totalNetworks.add(n.name));
-        });
+      try {
+        const industries = await getCachedCountryIndustryBreakdown(country.code);
+        if (industries && industries.length > 0) {
+          totalCountriesWithData++;
+          industries.forEach((ind) => {
+            totalLocations += ind.count;
+            ind.networks.forEach((n) => totalNetworks.add(n.name));
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to fetch industry breakdown for ${country.code}:`, error);
       }
     })
   );
@@ -202,5 +233,13 @@ export default async function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

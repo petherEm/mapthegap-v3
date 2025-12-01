@@ -1,8 +1,10 @@
+"use client";
+
 import { Heading } from "./heading";
 import { Subheading } from "./subheading";
 import { cn } from "@/lib/utils";
 import { InViewDiv } from "./in-view-div";
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { TestimonialColumnContainer } from "./testimonial-column-container";
 import Image from "next/image";
 
@@ -192,8 +194,11 @@ function Testimonial({
   ...props
 }: Omit<React.ComponentPropsWithoutRef<"figure">, keyof Testimonial> &
   Testimonial) {
-  let animationDelay = useMemo(() => {
-    let possibleAnimationDelays = [
+  // Use default value for SSR, compute random on client
+  const [animationDelay, setAnimationDelay] = useState("0s");
+
+  useEffect(() => {
+    const possibleAnimationDelays = [
       "0s",
       "0.1s",
       "0.2s",
@@ -201,12 +206,13 @@ function Testimonial({
       "0.4s",
       "0.5s",
     ];
-    return possibleAnimationDelays[
-      Math.floor(Math.random() * possibleAnimationDelays.length)
-    ];
+    setAnimationDelay(
+      possibleAnimationDelays[
+        Math.floor(Math.random() * possibleAnimationDelays.length)
+      ]
+    );
   }, []);
 
-  const boxStyle = {};
   return (
     <figure
       className={cn(

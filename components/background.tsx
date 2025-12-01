@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
-import React, { useId } from "react";
+import React, { useId, useState, useEffect } from "react";
 
 export const Background = () => {
   return (
@@ -45,6 +45,17 @@ const SVGVertical = ({ className }: { className?: string }) => {
   const height = 140;
 
   const id = useId();
+
+  // Use default values for SSR, update on client
+  const [animationValues, setAnimationValues] = useState({ duration: 2, delay: 7 });
+
+  useEffect(() => {
+    setAnimationValues({
+      duration: Math.random() * 2 + 1,
+      delay: Math.floor(Math.random() * 6) + 5,
+    });
+  }, []);
+
   return (
     <motion.svg
       width={width}
@@ -68,8 +79,8 @@ const SVGVertical = ({ className }: { className?: string }) => {
           animate={{ x1: 2, y1: 400, x2: 2, y2: 600 }}
           transition={{
             repeat: Infinity,
-            duration: Math.random() * 2 + 1,
-            delay: Math.floor(Math.random() * 6) + 5,
+            duration: animationValues.duration,
+            delay: animationValues.delay,
           }}
           gradientUnits="userSpaceOnUse"
         >
@@ -87,6 +98,17 @@ const SVG = ({ className }: { className?: string }) => {
   const height = 1;
 
   const id = useId();
+
+  // Use default values for SSR, update on client
+  const [animationValues, setAnimationValues] = useState({ duration: 2, delay: 7 });
+
+  useEffect(() => {
+    setAnimationValues({
+      duration: Math.random() * 2 + 1,
+      delay: Math.floor(Math.random() * 6) + 5,
+    });
+  }, []);
+
   return (
     <motion.svg
       width={width}
@@ -110,8 +132,8 @@ const SVG = ({ className }: { className?: string }) => {
           animate={{ x1: 400, y1: 0, x2: 600, y2: 0 }}
           transition={{
             repeat: Infinity,
-            duration: Math.random() * 2 + 1,
-            delay: Math.floor(Math.random() * 6) + 5,
+            duration: animationValues.duration,
+            delay: animationValues.delay,
           }}
           gradientUnits="userSpaceOnUse"
         >

@@ -28,10 +28,9 @@ export function GlobalNetworkSelection({
   const count = selectedKeys.size;
   const isDisabled = count === 0 || isNavigating;
 
-  const handleShowOnMap = () => {
-    if (count === 0) return;
-
-    setIsNavigating(true);
+  // Build the target URL for navigation
+  const getTargetUrl = () => {
+    if (count === 0) return null;
 
     // Group networks by country
     const networksByCountry = new Map<CountryCode, NetworkName[]>();
@@ -43,13 +42,12 @@ export function GlobalNetworkSelection({
     });
 
     // For now, navigate to the country with most selected networks
-    // In future, could show a multi-country view
     let targetCountry: CountryCode | null = null;
-    let maxCount = 0;
+    let maxNetworkCount = 0;
 
     networksByCountry.forEach((networks, country) => {
-      if (networks.length > maxCount) {
-        maxCount = networks.length;
+      if (networks.length > maxNetworkCount) {
+        maxNetworkCount = networks.length;
         targetCountry = country;
       }
     });
@@ -57,8 +55,26 @@ export function GlobalNetworkSelection({
     if (targetCountry) {
       const networksForCountry = networksByCountry.get(targetCountry) || [];
       const networksParam = networksForCountry.join(",");
-      router.push(`/${targetCountry}?networks=${encodeURIComponent(networksParam)}`);
+      return `/${targetCountry}?networks=${encodeURIComponent(networksParam)}`;
     }
+
+    return null;
+  };
+
+  // Prefetch route on hover for faster navigation
+  const handleMouseEnter = () => {
+    const url = getTargetUrl();
+    if (url) {
+      router.prefetch(url);
+    }
+  };
+
+  const handleShowOnMap = () => {
+    const url = getTargetUrl();
+    if (!url) return;
+
+    setIsNavigating(true);
+    router.push(url);
   };
 
   return (
@@ -108,6 +124,7 @@ export function GlobalNetworkSelection({
           {/* Show on Map Button */}
           <button
             onClick={handleShowOnMap}
+            onMouseEnter={handleMouseEnter}
             disabled={isDisabled}
             className={`
               flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all

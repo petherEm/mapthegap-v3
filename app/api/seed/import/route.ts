@@ -378,21 +378,26 @@ export async function POST(request: Request) {
     const affectedCountries = Object.keys(summary);
     console.log(`[Import] Invalidating cache for countries:`, affectedCountries);
 
+    // Invalidate country-specific caches (use cache directive)
     for (const country of affectedCountries) {
       // Invalidate route-level cache
       revalidatePath(`/${country}`, "page");
+      // Invalidate country-specific data caches (Next.js 16 "use cache")
+      revalidateTag(`locations-${country}`, "max");
+      revalidateTag(`stats-${country}`, "max");
     }
 
-    // Invalidate function-level cache for industry stats
-    // This clears the unstable_cache used by getCountryIndustryBreakdown
-    // In Next.js 16, revalidateTag requires a profile argument
-    revalidateTag("industry-stats", "default");
+    // Invalidate global cache tags (Next.js 16 "use cache")
+    revalidateTag("locations", "max");
+    revalidateTag("stats", "max");
+    revalidateTag("global-stats", "max");
+    revalidateTag("industry-stats", "max");
 
     // Also invalidate dashboard and maps to update counts
     revalidatePath("/dashboard", "page");
     revalidatePath("/maps", "page");
 
-    console.log(`[Import] Cache invalidation completed (paths + industry-stats tag)`);
+    console.log(`[Import] Cache invalidation completed (paths + cache tags)`);
 
     const response = {
       success: inserted > 0,
