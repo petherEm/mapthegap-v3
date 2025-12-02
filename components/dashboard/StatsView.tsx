@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeftIcon, ChartBarIcon, MapIcon, ScaleIcon } from "@heroicons/react/24/outline";
+import { CountryFlag } from "@/components/ui/country-flag";
 import type { Country } from "@/types";
 import type {
   CountryStatsOverview,
@@ -49,7 +50,7 @@ export function StatsView({
             Back to Map
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-4xl">{country.flag}</span>
+            <CountryFlag countryCode={country.code} size={40} />
             <h1 className="text-4xl font-bold">{country.name} Statistics</h1>
           </div>
           <p className="text-neutral-600 dark:text-neutral-400">

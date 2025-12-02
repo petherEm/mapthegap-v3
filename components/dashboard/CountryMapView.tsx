@@ -16,6 +16,7 @@ import {
   ArrowPathIcon,
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
+import { CountryFlag } from "@/components/ui/country-flag";
 import { normalizeCityName, normalizeCountyName } from "@/lib/utils/normalize";
 import { getLocationsInViewport, type BoundingBox } from "@/lib/supabase/queries";
 import type { ViewportBounds } from "@/components/map/MapContainer";
@@ -514,9 +515,7 @@ export function CountryMapView({
         <Sidebar collapsible="icon" className="border-neutral-200 dark:border-neutral-800 h-full">
           <SidebarHeader className="border-b border-neutral-200 dark:border-neutral-800 px-4 py-3">
             <div className="flex items-center gap-3">
-              <span className="text-2xl" aria-label={country.name}>
-                {country.flag}
-              </span>
+              <CountryFlag countryCode={country.code} size={28} />
               <div className="flex-1 min-w-0">
                 <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-50 truncate group-data-[collapsible=icon]:hidden">
                   {country.name}

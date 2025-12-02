@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { CountryFlag } from "@/components/ui/country-flag";
 import type { IndustryBreakdown, NetworkName, Country } from "@/types";
 
 interface CountryAccordionProps {
@@ -47,9 +48,7 @@ export function CountryAccordion({
         />
 
         {/* Flag */}
-        <span className="text-2xl flex-shrink-0" aria-hidden="true">
-          {country.flag}
-        </span>
+        <CountryFlag countryCode={country.code} size={28} className="flex-shrink-0" />
 
         {/* Country Name & Stats */}
         <div className="flex-1 min-w-0">

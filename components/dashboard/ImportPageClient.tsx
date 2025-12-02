@@ -154,7 +154,7 @@ export function ImportPageClient() {
               <option value="">Use country from JSON data</option>
               {Object.values(COUNTRIES).map((country) => (
                 <option key={country.code} value={country.code}>
-                  {country.flag} {country.name}
+                  {country.name}
                 </option>
               ))}
             </select>

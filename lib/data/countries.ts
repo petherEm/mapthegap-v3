@@ -4,7 +4,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   poland: {
     code: "poland",
     name: "Poland",
-    flag: "🇵🇱",
+    flag: "pl", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: ["Western Union", "MoneyGram", "Ria", "Poczta Polska"],
     center: [19.1451, 51.9194], // [lng, lat] for Warsaw
     zoom: 6,
@@ -16,7 +16,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   lithuania: {
     code: "lithuania",
     name: "Lithuania",
-    flag: "🇱🇹",
+    flag: "lt", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: ["Western Union", "MoneyGram", "Ria"],
     center: [25.2797, 54.6872], // [lng, lat] for Vilnius
     zoom: 7,
@@ -28,7 +28,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   latvia: {
     code: "latvia",
     name: "Latvia",
-    flag: "🇱🇻",
+    flag: "lv", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: ["Western Union", "MoneyGram", "Ria"],
     center: [24.1052, 56.9496], // [lng, lat] for Riga
     zoom: 7,
@@ -40,7 +40,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   estonia: {
     code: "estonia",
     name: "Estonia",
-    flag: "🇪🇪",
+    flag: "ee", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: ["Western Union", "MoneyGram"],
     center: [24.7536, 59.4370], // [lng, lat] for Tallinn
     zoom: 7,
@@ -52,7 +52,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   gb: {
     code: "gb",
     name: "Great Britain",
-    flag: "🇬🇧",
+    flag: "gb", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: [], // Networks dynamically detected from database - supports any service type
     center: [-3.4360, 55.3781], // [lng, lat] for UK geographic center (near Haltwhistle)
     zoom: 5.5,
@@ -64,7 +64,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   france: {
     code: "france",
     name: "France",
-    flag: "🇫🇷",
+    flag: "fr", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: [], // Networks dynamically detected from database
     center: [2.3522, 48.8566], // [lng, lat] for Paris
     zoom: 5.5,
@@ -76,7 +76,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   honduras: {
     code: "honduras",
     name: "Honduras",
-    flag: "🇭🇳",
+    flag: "hn", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: [], // Networks dynamically detected from database
     center: [-87.2068, 14.0723], // [lng, lat] for Tegucigalpa
     zoom: 7,
@@ -88,7 +88,7 @@ export const COUNTRIES: Record<CountryCode, Country> = {
   usa: {
     code: "usa",
     name: "United States",
-    flag: "🇺🇸",
+    flag: "us", // ISO 3166-1 alpha-2 code for CircleFlag
     networks: [], // Networks dynamically detected from database
     center: [-95.7129, 37.0902], // [lng, lat] for geographic center of contiguous US
     zoom: 4,

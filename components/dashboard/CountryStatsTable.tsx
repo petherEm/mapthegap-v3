@@ -6,6 +6,7 @@ import type { CountryNetworkStat, Country, NetworkName } from "@/types";
 import { COUNTRIES } from "@/lib/data/countries";
 import { getNetworkConfig } from "@/lib/data/networks";
 import { MapIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
+import { CountryFlag } from "@/components/ui/country-flag";
 
 type SortField = "country" | "total";
 type SortDirection = "asc" | "desc";
@@ -183,9 +184,7 @@ export function CountryStatsTable({ statistics }: CountryStatsTableProps) {
                 {/* Country */}
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl" aria-label={row.country.name}>
-                      {row.country.flag}
-                    </span>
+                    <CountryFlag countryCode={row.country.code} size={32} />
                     <span className="text-neutral-50 font-medium">
                       {row.country.name}
                     </span>
@@ -263,9 +262,7 @@ export function CountryStatsTable({ statistics }: CountryStatsTableProps) {
             {/* Country Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <span className="text-4xl" aria-label={row.country.name}>
-                  {row.country.flag}
-                </span>
+                <CountryFlag countryCode={row.country.code} size={40} />
                 <div>
                   <h3 className="text-xl font-semibold text-neutral-50">
                     {row.country.name}
