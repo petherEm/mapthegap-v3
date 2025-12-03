@@ -28,37 +28,23 @@ export function GlobalNetworkSelection({
   const count = selectedKeys.size;
   const isDisabled = count === 0 || isNavigating;
 
-  // Build the target URL for navigation
+  // Build the target URL for navigation (single country only)
   const getTargetUrl = () => {
     if (count === 0) return null;
 
-    // Group networks by country
-    const networksByCountry = new Map<CountryCode, NetworkName[]>();
+    // All selections are from the same country now
+    const firstKey = Array.from(selectedKeys)[0];
+    const { countryCode } = parseSelectionKey(firstKey);
 
+    // Collect all network names
+    const networks: NetworkName[] = [];
     selectedKeys.forEach((key) => {
-      const { countryCode, network } = parseSelectionKey(key);
-      const existing = networksByCountry.get(countryCode) || [];
-      networksByCountry.set(countryCode, [...existing, network]);
+      const { network } = parseSelectionKey(key);
+      networks.push(network);
     });
 
-    // For now, navigate to the country with most selected networks
-    let targetCountry: CountryCode | null = null;
-    let maxNetworkCount = 0;
-
-    networksByCountry.forEach((networks, country) => {
-      if (networks.length > maxNetworkCount) {
-        maxNetworkCount = networks.length;
-        targetCountry = country;
-      }
-    });
-
-    if (targetCountry) {
-      const networksForCountry = networksByCountry.get(targetCountry) || [];
-      const networksParam = networksForCountry.join(",");
-      return `/${targetCountry}?networks=${encodeURIComponent(networksParam)}`;
-    }
-
-    return null;
+    const networksParam = networks.join(",");
+    return `/${countryCode}?networks=${encodeURIComponent(networksParam)}`;
   };
 
   // Prefetch route on hover for faster navigation
@@ -84,39 +70,50 @@ export function GlobalNetworkSelection({
           {/* Selected Networks Display */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-medium text-muted-foreground flex-shrink-0">
-                Selected ({count}/{maxNetworks}):
-              </span>
-
               {count === 0 ? (
-                <span className="text-sm text-muted-foreground/60 italic">
-                  Click networks above to select
-                </span>
+                <>
+                  <span className="text-sm font-medium text-muted-foreground flex-shrink-0">
+                    Selected (0/{maxNetworks}):
+                  </span>
+                  <span className="text-sm text-muted-foreground/60 italic">
+                    Click networks above to select
+                  </span>
+                </>
               ) : (
-                <div className="flex flex-wrap gap-1.5">
-                  {Array.from(selectedKeys).map((key) => {
-                    const { countryCode, network } = parseSelectionKey(key);
+                <>
+                  {/* Show country name once since all selections are from same country */}
+                  {(() => {
+                    const firstKey = Array.from(selectedKeys)[0];
+                    const { countryCode } = parseSelectionKey(firstKey);
                     const countryName = countryNameMap.get(countryCode) || countryCode;
                     return (
-                      <span
-                        key={key}
-                        className="inline-flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-700 dark:text-violet-300 rounded-md text-xs font-medium"
-                      >
-                        <span className="truncate max-w-[150px]">
-                          {network}
-                          <span className="text-violet-500/70 ml-1">({countryName})</span>
-                        </span>
-                        <button
-                          onClick={() => onRemoveNetwork(key)}
-                          className="p-0.5 hover:bg-violet-500/20 rounded transition-colors"
-                          aria-label={`Remove ${network} from ${countryName}`}
-                        >
-                          <XMarkIcon className="w-3 h-3" />
-                        </button>
+                      <span className="text-sm font-medium text-muted-foreground flex-shrink-0">
+                        {countryName} ({count}/{maxNetworks}):
                       </span>
                     );
-                  })}
-                </div>
+                  })()}
+                  <div className="flex flex-wrap gap-1.5">
+                    {Array.from(selectedKeys).map((key) => {
+                      const { network } = parseSelectionKey(key);
+                      return (
+                        <span
+                          key={key}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/30 text-violet-700 dark:text-violet-300 rounded-md text-xs font-medium"
+                        >
+                          <span className="truncate max-w-[150px]">{network}</span>
+                          <button
+                            type="button"
+                            onClick={() => onRemoveNetwork(key)}
+                            className="p-0.5 hover:bg-violet-500/20 rounded transition-colors"
+                            aria-label={`Remove ${network}`}
+                          >
+                            <XMarkIcon className="w-3 h-3" />
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           </div>

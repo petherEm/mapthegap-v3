@@ -54,16 +54,37 @@ export function MapsPageClient({ countryStats }: MapsPageClientProps) {
     setExpandedCountry((prev) => (prev === countryCode ? null : countryCode));
   };
 
+  // Get the currently selected country (if any)
+  const currentlySelectedCountry = useMemo((): CountryCode | null => {
+    if (selectedKeys.size === 0) return null;
+    const firstKey = Array.from(selectedKeys)[0];
+    return parseSelectionKey(firstKey).countryCode;
+  }, [selectedKeys]);
+
   const handleSelectNetwork = (countryCode: CountryCode, network: NetworkName) => {
     const key = createSelectionKey(countryCode, network);
     setSelectedKeys((prev) => {
       const newSet = new Set(prev);
+
       if (newSet.has(key)) {
         // Deselect if already selected
         newSet.delete(key);
-      } else if (newSet.size < MAX_NETWORKS) {
-        // Select if under limit
-        newSet.add(key);
+      } else {
+        // Check if selecting from a different country
+        if (prev.size > 0) {
+          const firstKey = Array.from(prev)[0];
+          const currentCountry = parseSelectionKey(firstKey).countryCode;
+
+          if (currentCountry !== countryCode) {
+            // Clear previous selections when switching countries
+            newSet.clear();
+          }
+        }
+
+        // Add new selection if under limit
+        if (newSet.size < MAX_NETWORKS) {
+          newSet.add(key);
+        }
       }
       return newSet;
     });
@@ -150,6 +171,7 @@ export function MapsPageClient({ countryStats }: MapsPageClientProps) {
           <div className="text-center py-12 text-muted-foreground">
             <p>No countries match "{searchQuery}"</p>
             <button
+              type="button"
               onClick={() => setSearchQuery("")}
               className="mt-2 text-violet-500 hover:text-violet-600 transition-colors"
             >
@@ -157,19 +179,27 @@ export function MapsPageClient({ countryStats }: MapsPageClientProps) {
             </button>
           </div>
         ) : (
-          filteredCountries.map((stats) => (
-            <CountryAccordion
-              key={stats.country.code}
-              country={stats.country}
-              totalLocations={stats.totalLocations}
-              industries={stats.industries}
-              isExpanded={expandedCountry === stats.country.code}
-              onToggle={() => handleToggleCountry(stats.country.code)}
-              selectedNetworks={getSelectedNetworksForCountry(stats.country.code)}
-              onSelectNetwork={(network) => handleSelectNetwork(stats.country.code, network)}
-              maxReached={maxReached}
-            />
-          ))
+          filteredCountries.map((stats) => {
+            // Check if another country has selections (show hint that clicking will switch)
+            const hasSelectionsInOtherCountry =
+              currentlySelectedCountry !== null &&
+              currentlySelectedCountry !== stats.country.code;
+
+            return (
+              <CountryAccordion
+                key={stats.country.code}
+                country={stats.country}
+                totalLocations={stats.totalLocations}
+                industries={stats.industries}
+                isExpanded={expandedCountry === stats.country.code}
+                onToggle={() => handleToggleCountry(stats.country.code)}
+                selectedNetworks={getSelectedNetworksForCountry(stats.country.code)}
+                onSelectNetwork={(network) => handleSelectNetwork(stats.country.code, network)}
+                maxReached={maxReached}
+                hasSelectionsInOtherCountry={hasSelectionsInOtherCountry}
+              />
+            );
+          })
         )}
       </div>
 

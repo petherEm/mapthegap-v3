@@ -180,6 +180,13 @@ function MapContainer({
     setSelectedLocation(null);
   }, []);
 
+  // Store locations in a ref so click handler always has latest data
+  // Use full locations array (not filtered) for lookups - more reliable
+  const locationsRef = useRef(locations);
+  useEffect(() => {
+    locationsRef.current = locations;
+  }, [locations]);
+
   // Manage Mapbox GeoJSON layer for individual mode
   useEffect(() => {
     const map = mapRef.current?.getMap();
@@ -233,12 +240,13 @@ function MapContainer({
             },
           });
 
-          // Add click handler
+          // Add click handler - use ref to always get latest locations
           map.on('click', layerId, (e: any) => {
             if (e.features && e.features.length > 0) {
               const feature = e.features[0];
               const locationId = feature.properties.id;
-              const location = filteredLocations.find((loc) => loc.id === locationId);
+              // Use ref to get from full locations array (not stale closure)
+              const location = locationsRef.current.find((loc) => loc.id === locationId);
               if (location) {
                 setSelectedLocation(location);
               }

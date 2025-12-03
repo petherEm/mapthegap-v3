@@ -13,6 +13,7 @@ interface CountryAccordionProps {
   selectedNetworks: Set<NetworkName>;
   onSelectNetwork: (network: NetworkName) => void;
   maxReached: boolean;
+  hasSelectionsInOtherCountry?: boolean;
 }
 
 export function CountryAccordion({
@@ -24,6 +25,7 @@ export function CountryAccordion({
   selectedNetworks,
   onSelectNetwork,
   maxReached,
+  hasSelectionsInOtherCountry = false,
 }: CountryAccordionProps) {
   // Count how many networks from this country are selected
   const allNetworksInCountry = industries.flatMap((ind) =>
@@ -80,6 +82,14 @@ export function CountryAccordion({
       {/* Expanded Content */}
       {isExpanded && industries.length > 0 && (
         <div className="px-4 pb-4 pt-1 border-t border-border/50">
+          {/* Hint when selections exist in another country */}
+          {hasSelectionsInOtherCountry && (
+            <div className="mb-3 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-md">
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Selecting a network here will clear your current selection from another country.
+              </p>
+            </div>
+          )}
           <div className="space-y-3">
             {industries.map((industry) => (
               <div key={industry.category}>
