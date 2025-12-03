@@ -16,6 +16,8 @@ const COUNTRY_MAP: Record<string, CountryCode> = {
   FR: "france",
   HN: "honduras",
   US: "usa",
+  CZ: "czechia",
+  MX: "mexico",
 };
 
 // Known network names with exact casing (to match database)

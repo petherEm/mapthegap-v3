@@ -13,6 +13,8 @@ const COUNTRY_CODE_TO_ISO: Record<CountryCode, string> = {
   france: "fr",
   honduras: "hn",
   usa: "us",
+  czechia: "cz",
+  mexico: "mx",
 };
 
 interface CountryFlagProps {

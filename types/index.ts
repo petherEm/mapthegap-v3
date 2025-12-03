@@ -22,7 +22,7 @@ export interface Location {
 }
 
 // Country codes
-export type CountryCode = "poland" | "lithuania" | "latvia" | "estonia" | "gb" | "france" | "honduras" | "usa";
+export type CountryCode = "poland" | "lithuania" | "latvia" | "estonia" | "gb" | "france" | "honduras" | "usa" | "czechia" | "mexico";
 
 // Industry categories for location classification
 export type IndustryCategory =

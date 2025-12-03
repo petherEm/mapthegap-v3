@@ -97,6 +97,30 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       [-66.9, 49.4], // [east, north]
     ],
   },
+  czechia: {
+    code: "czechia",
+    name: "Czechia",
+    flag: "cz", // ISO 3166-1 alpha-2 code for CircleFlag
+    networks: [], // Networks dynamically detected from database
+    center: [15.473, 49.817], // [lng, lat] for geographic center
+    zoom: 7,
+    bounds: [
+      [12.09, 48.55], // [west, south]
+      [18.86, 51.06], // [east, north]
+    ],
+  },
+  mexico: {
+    code: "mexico",
+    name: "Mexico",
+    flag: "mx", // ISO 3166-1 alpha-2 code for CircleFlag
+    networks: [], // Networks dynamically detected from database
+    center: [-102.55, 23.63], // [lng, lat] for geographic center
+    zoom: 5,
+    bounds: [
+      [-118.4, 14.53], // [west, south]
+      [-86.7, 32.72], // [east, north]
+    ],
+  },
 };
 
 export const COUNTRY_LIST: Country[] = Object.values(COUNTRIES);
