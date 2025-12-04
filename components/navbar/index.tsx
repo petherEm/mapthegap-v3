@@ -15,14 +15,14 @@ interface NavItem {
 }
 
 const defaultNavItems: NavItem[] = [
-  {
-    title: "Pricing",
-    link: "/pricing",
-  },
-  {
-    title: "Contact",
-    link: "/contact",
-  },
+  // {
+  //   title: "Pricing",
+  //   link: "/pricing",
+  // },
+  // {
+  //   title: "Contact",
+  //   link: "/contact",
+  // },
 ];
 
 const dashboardNavItems: NavItem[] = [

@@ -17,7 +17,6 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Password from "./password";
 import { Button } from "./button";
-import { Logo } from "./Logo";
 import { createClient } from "@/lib/supabase/client";
 
 const formSchema = z.object({
@@ -81,10 +80,7 @@ export function SignupForm() {
       <div className="flex items-center w-full justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-md">
           <div>
-            <div className="flex">
-              <Logo />
-            </div>
-            <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
+            <h2 className="text-2xl font-bold leading-9 tracking-tight text-black dark:text-white">
               Sign up for an account
             </h2>
           </div>

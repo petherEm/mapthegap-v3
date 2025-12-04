@@ -11,6 +11,7 @@ import {
 
 export const AnimatedTooltip = ({
   items,
+  position = "top",
 }: {
   items: {
     id: number;
@@ -18,6 +19,7 @@ export const AnimatedTooltip = ({
     designation: string;
     image: string;
   }[];
+  position?: "top" | "top-left" | "top-right";
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const springConfig = { stiffness: 100, damping: 5 };
@@ -62,11 +64,17 @@ export const AnimatedTooltip = ({
                 }}
                 exit={{ opacity: 0, y: 20, scale: 0.6 }}
                 style={{
-                  translateX: translateX,
-                  rotate: rotate,
+                  translateX: position === "top" ? translateX : 0,
+                  rotate: position === "top" ? rotate : 0,
                   whiteSpace: "nowrap",
                 }}
-                className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs  flex-col items-center justify-center rounded-md bg-black z-50 shadow-xl px-4 py-2"
+                className={`absolute flex text-xs flex-col items-center justify-center rounded-md bg-black z-50 shadow-xl px-4 py-2 ${
+                  position === "top-left"
+                    ? "-top-20 right-0"
+                    : position === "top-right"
+                    ? "-top-20 left-0"
+                    : "-top-16 -left-1/2 translate-x-1/2"
+                }`}
               >
                 <div className="absolute inset-x-10 z-30 w-[20%] -bottom-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent h-px " />
                 <div className="absolute left-10 w-[40%] z-30 -bottom-px bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px " />
@@ -83,7 +91,7 @@ export const AnimatedTooltip = ({
             width={100}
             src={item.image}
             alt={item.name}
-            className="object-cover !m-0 !p-0 object-top rounded-full h-14 w-14 border-2 group-hover:scale-105 group-hover:z-30 border-white  relative transition duration-500"
+            className="object-cover !m-0 !p-0 object-top rounded-full h-24 w-24 border-2 group-hover:scale-105 group-hover:z-30 border-white  relative transition duration-500"
           />
         </div>
       ))}

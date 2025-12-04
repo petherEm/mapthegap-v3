@@ -3,59 +3,60 @@ import React from "react";
 import { Logo } from "./Logo";
 
 export const Footer = () => {
-  const links = [
-    {
-      name: "Pricing",
-      href: "/pricing",
-    },
-    {
-      name: "Blog",
-      href: "/blog",
-    },
-    {
-      name: "Contact",
-      href: "/contact",
-    },
-  ];
-  const legal = [
-    {
-      name: "Privacy Policy",
-      href: "#",
-    },
-    {
-      name: "Terms of Service",
-      href: "#",
-    },
-    {
-      name: "Refund Policy",
-      href: "#",
-    },
-  ];
-  const socials = [
-    {
-      name: "Twitter",
-      href: "https://twitter.com/mannupaaji",
-    },
-    {
-      name: "LinkedIn",
-      href: "https://linkedin.com/in/manuarora28",
-    },
-    {
-      name: "GitHub",
-      href: "https://github.com/manuarora700",
-    },
-  ];
+  // const links = [
+  //   {
+  //     name: "Pricing",
+  //     href: "/pricing",
+  //   },
+  //   {
+  //     name: "Blog",
+  //     href: "/blog",
+  //   },
+  //   {
+  //     name: "Contact",
+  //     href: "/contact",
+  //   },
+  // ];
+  // const legal = [
+  //   {
+  //     name: "Privacy Policy",
+  //     href: "#",
+  //   },
+  //   {
+  //     name: "Terms of Service",
+  //     href: "#",
+  //   },
+  //   {
+  //     name: "Refund Policy",
+  //     href: "#",
+  //   },
+  // ];
+  // const socials = [
+  //   {
+  //     name: "Twitter",
+  //     href: "https://twitter.com/mannupaaji",
+  //   },
+  //   {
+  //     name: "LinkedIn",
+  //     href: "https://linkedin.com/in/manuarora28",
+  //   },
+  //   {
+  //     name: "GitHub",
+  //     href: "https://github.com/manuarora700",
+  //   },
+  // ];
   return (
     <div className="relative">
       <div className="border-t border-neutral-100  dark:border-neutral-800 px-8 pt-20 pb-32 relative bg-white dark:bg-black">
-        <div className="max-w-7xl mx-auto text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-start ">
-          <div>
-            <div className="mr-4  md:flex mb-4">
+        <div className="max-w-7xl mx-auto text-sm text-neutral-500 dark:text-neutral-400 flex sm:flex-row flex-col justify-between items-center">
+          <div className="text-center sm:text-left">
+            <div className="mr-4 md:flex mb-4">
               <Logo />
             </div>
             <div>Copyright &copy; 2025 MapTheGap</div>
             <div className="mt-2">All rights reserved</div>
           </div>
+          {/* Links commented out for now
           <div className="grid grid-cols-3 gap-10 items-start mt-10 md:mt-0">
             <div className="flex justify-center space-y-4 flex-col mt-4">
               {links.map((link) => (
@@ -91,6 +92,7 @@ export const Footer = () => {
               ))}
             </div>
           </div>
+          */}
         </div>
       </div>
       <p className="text-center text-5xl md:text-9xl lg:text-[12rem] font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-neutral-200 dark:to-neutral-800 inset-x-0">

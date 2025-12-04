@@ -5,39 +5,25 @@ import { Subheading } from "./subheading";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
+const allLogos = [
+  [
+    { title: "Western Union", src: "/logos/wu_logo.svg" },
+    { title: "Ria", src: "/logos/ria_logo.svg" },
+  ],
+  [
+    { title: "MoneyGram", src: "/logos/moneygram_logo.svg" },
+    { title: "Western Union 2", src: "/logos/wu_logo.svg" },
+  ],
+  [
+    { title: "Ria 2", src: "/logos/ria_logo.svg" },
+    { title: "MoneyGram 2", src: "/logos/moneygram_logo.svg" },
+  ],
+];
+
 export const Companies = () => {
-  let [logos, setLogos] = useState([
-    [
-      {
-        title: "netflix",
-        src: "/logos/netflix.png",
-      },
-      {
-        title: "google",
-        src: "/logos/google.webp",
-      },
-      {
-        title: "meta",
-        src: "/logos/meta.png",
-      },
-    ],
-    [
-      {
-        title: "netflix second",
-        src: "/logos/netflix.png",
-      },
-      {
-        title: "google second",
-        src: "/logos/google.webp",
-      },
-      {
-        title: "meta second",
-        src: "/logos/meta.png",
-      },
-    ],
-  ]);
-  const [activeLogoSet, setActiveLogoSet] = useState(logos[0]);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [logos, setLogos] = useState(allLogos);
+  const [activeLogoSet, setActiveLogoSet] = useState(allLogos[0]);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const flipLogos = () => {
     setLogos((currentLogos) => {
@@ -53,18 +39,18 @@ export const Companies = () => {
       const timer = setTimeout(() => {
         flipLogos();
       }, 3000);
-      return () => clearTimeout(timer); // Clear timeout if component unmounts or isAnimating changes
+      return () => clearTimeout(timer);
     }
   }, [isAnimating]);
 
   return (
     <div className="relative z-20 py-10 md:py-40">
-      <Heading as="h2">Trusted by the best companies</Heading>
-      <Subheading className="text-center ">
-        MapTheGap is the choice of leading enterprises worldwide.
+      <Heading as="h2">Networks we cover</Heading>
+      <Subheading className="text-center">
+        Real-time location data from major money transfer and ATM networks.
       </Subheading>
 
-      <div className="flex gap-10 flex-wrap justify-center md:gap-40 relative h-full w-full mt-20">
+      <div className="flex gap-16 flex-wrap justify-center md:gap-32 relative h-full w-full mt-20">
         <AnimatePresence
           mode="popLayout"
           onExitComplete={() => {
@@ -99,9 +85,9 @@ export const Companies = () => {
               <Image
                 src={logo.src}
                 alt={logo.title}
-                width="100"
+                width="200"
                 height="100"
-                className="md:h-20 md:w-40 h-10 w-20 object-contain filter"
+                className="md:h-24 md:w-48 h-16 w-32 object-contain dark:brightness-0 dark:invert"
               />
             </motion.div>
           ))}
