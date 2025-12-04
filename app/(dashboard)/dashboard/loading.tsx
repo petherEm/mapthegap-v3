@@ -1,4 +1,5 @@
 import { Map, Upload, BarChart3 } from "lucide-react";
+import { StatsCardsSkeleton } from "@/components/dashboard/StatsCardsSkeleton";
 
 export default function DashboardLoading() {
   return (
@@ -6,42 +7,27 @@ export default function DashboardLoading() {
       <div className="mx-auto max-w-5xl px-6 py-8">
         {/* Welcome Header Skeleton */}
         <div className="mb-8">
-          <div className="h-8 w-64 bg-muted rounded animate-pulse" />
-          <div className="mt-2 h-5 w-80 bg-muted/50 rounded animate-pulse" />
+          <div className="h-8 w-64 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
+          <div className="mt-2 h-5 w-80 bg-neutral-100 dark:bg-neutral-800 rounded animate-pulse" />
         </div>
 
-        {/* Stats Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {[Map, BarChart3, Map].map((Icon, i) => (
-            <div
-              key={i}
-              className="bg-card/50 border border-border rounded-xl p-5"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="h-4 w-24 bg-muted rounded animate-pulse" />
-                  <div className="mt-2 h-9 w-16 bg-muted rounded animate-pulse" />
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-violet-400/50" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Stats Cards Skeleton - Reuse component */}
+        <StatsCardsSkeleton />
 
-        {/* Quick Actions Skeleton */}
+        {/* Quick Actions - Show real content since it's static */}
         <div className="mb-8">
-          <div className="h-6 w-32 bg-muted rounded animate-pulse mb-4" />
+          <h2 className="text-lg font-semibold text-foreground mb-4">
+            Quick Actions
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { Icon: Map, color: "violet" },
-              { Icon: Upload, color: "emerald" },
-              { Icon: BarChart3, color: "amber" },
+              { Icon: Map, color: "violet", title: "View Maps" },
+              { Icon: Upload, color: "emerald", title: "Import Data" },
+              { Icon: BarChart3, color: "amber", title: "Analytics" },
             ].map((action, i) => (
               <div
                 key={i}
-                className="bg-card/50 border border-border rounded-xl p-5"
+                className="bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5"
               >
                 <div className="flex items-start justify-between">
                   <div
@@ -64,16 +50,24 @@ export default function DashboardLoading() {
                     />
                   </div>
                 </div>
-                <div className="mt-4 h-5 w-24 bg-muted rounded animate-pulse" />
-                <div className="mt-2 h-4 w-full bg-muted/50 rounded animate-pulse" />
+                <div
+                  className="mt-4 h-5 w-24 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                />
+                <div
+                  className="mt-2 h-4 w-full bg-neutral-100 dark:bg-neutral-800 rounded animate-pulse"
+                  style={{ animationDelay: `${i * 100 + 50}ms` }}
+                />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Getting Started Skeleton */}
-        <div className="bg-card/50 border border-border rounded-xl p-5">
-          <div className="h-6 w-36 bg-muted rounded animate-pulse mb-4" />
+        {/* Getting Started - Show real structure */}
+        <div className="bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-xl p-5">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
+            Getting Started
+          </h2>
           <div className="space-y-3">
             {[1, 2, 3].map((num) => (
               <div key={num} className="flex items-start gap-3">
@@ -81,8 +75,14 @@ export default function DashboardLoading() {
                   {num}
                 </span>
                 <div className="flex-1">
-                  <div className="h-5 w-40 bg-muted rounded animate-pulse" />
-                  <div className="mt-1 h-4 w-64 bg-muted/50 rounded animate-pulse" />
+                  <div
+                    className="h-5 w-40 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse"
+                    style={{ animationDelay: `${num * 75}ms` }}
+                  />
+                  <div
+                    className="mt-1 h-4 w-64 bg-neutral-100 dark:bg-neutral-800 rounded animate-pulse"
+                    style={{ animationDelay: `${num * 75 + 25}ms` }}
+                  />
                 </div>
               </div>
             ))}
