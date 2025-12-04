@@ -29,23 +29,27 @@ export default async function MapsPage() {
 
         {/* Country List - Loads with skeleton fallback */}
         <Suspense fallback={
-          <>
+          <div className="pb-20">
             {/* Search Bar Skeleton */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <div className="flex-1 h-10 bg-muted rounded-lg animate-pulse" />
-              <div className="h-10 w-32 bg-muted rounded-lg animate-pulse" />
+              <div className="flex-1 h-10 bg-neutral-200 dark:bg-neutral-800 rounded-lg animate-pulse" />
+              <div className="flex items-center gap-4">
+                <div className="h-5 w-24 bg-neutral-100 dark:bg-neutral-800 rounded animate-pulse" />
+              </div>
             </div>
             <CountryListSkeleton />
             {/* Bottom Bar Skeleton */}
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 border-t border-border">
+            <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800">
               <div className="mx-auto max-w-4xl px-4 py-3">
                 <div className="flex items-center gap-4">
-                  <div className="flex-1 h-8 bg-muted rounded animate-pulse" />
-                  <div className="h-10 w-32 bg-muted rounded-lg animate-pulse" />
+                  <div className="flex-1">
+                    <div className="h-4 w-40 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
+                  </div>
+                  <div className="h-10 w-32 bg-neutral-200 dark:bg-neutral-700 rounded-lg animate-pulse" />
                 </div>
               </div>
             </div>
-          </>
+          </div>
         }>
           <CountryListServer />
         </Suspense>
