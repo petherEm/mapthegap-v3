@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoImage, LogoIcon } from "@/components/Logo";
 import {
   LayoutDashboard,
   Map,
@@ -111,12 +112,11 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       {/* Header with Logo */}
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="h-6 w-7 bg-violet-500 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-          <span className="font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
-            MapTheGap
-          </span>
+      <SidebarHeader className="border-b border-sidebar-border px-2 py-3">
+        <Link href="/dashboard" className="flex items-center group-data-[collapsible=icon]:justify-center">
+          <LogoImage size="sm" className="group-data-[collapsible=icon]:hidden" />
+          {/* Show short logo when collapsed */}
+          <LogoIcon size={32} className="hidden group-data-[collapsible=icon]:block" />
         </Link>
       </SidebarHeader>
 

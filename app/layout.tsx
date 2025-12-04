@@ -22,7 +22,7 @@ export default function RootLayout({
         <body
           className={cn(
             GeistSans.className,
-            "bg-white dark:bg-black antialiased h-full w-full"
+            "bg-white dark:bg-black antialiased h-full w-full overflow-x-hidden"
           )}
         >
           <ThemeProvider
