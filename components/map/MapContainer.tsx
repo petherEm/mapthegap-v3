@@ -1,11 +1,12 @@
 "use client";
 
 import { useRef, useState, useMemo, useCallback, useEffect } from "react";
+import { useTheme } from "next-themes";
 import MapboxMap, { Marker, Popup, NavigationControl } from "react-map-gl/mapbox";
 import type { MapRef } from "react-map-gl/mapbox";
 import Supercluster from "supercluster";
 import type { Location, NetworkName } from "@/types";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 import { MapMarker } from "./MapMarker";
 import { MapClusterMarker } from "./MapClusterMarker";
 import { LocationPopup } from "./LocationPopup";
@@ -42,11 +43,49 @@ function MapContainer({
   onViewportChange,
   isViewportLoading = false,
 }: MapContainerProps) {
+  const { theme, resolvedTheme } = useTheme();
   const mapRef = useRef<MapRef>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState(initialViewport);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   );
+
+  // Determine map style based on theme
+  const mapStyle = useMemo(() => {
+    const currentTheme = resolvedTheme || theme;
+    return currentTheme === "dark"
+      ? "mapbox://styles/mapbox/dark-v11"
+      : "mapbox://styles/mapbox/light-v11";
+  }, [theme, resolvedTheme]);
+
+  // Helper to get theme-aware network color
+  const getNetworkColor = useCallback((networkName: NetworkName) => {
+    const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
+    return getNetworkConfig(networkName, currentTheme).markerColor;
+  }, [theme, resolvedTheme]);
+
+  // Handle map resize when container dimensions change (e.g., sidebar toggle)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const map = mapRef.current?.getMap();
+      if (map) {
+        // Small delay to ensure CSS transitions complete
+        setTimeout(() => {
+          map.resize();
+        }, 300);
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   // Handle viewport change when user stops moving/zooming
   const handleMoveEnd = useCallback(() => {
@@ -206,7 +245,7 @@ function MapContainer({
             properties: {
               id: loc.id,
               network: loc.network_name,
-              color: NETWORKS[loc.network_name].color,
+              color: getNetworkColor(loc.network_name),
             },
             geometry: {
               type: 'Point',
@@ -281,13 +320,13 @@ function MapContainer({
   }, [viewMode, filteredLocations]);
 
   return (
-    <div className="relative w-full h-full">
+    <div ref={containerRef} className="relative w-full h-full">
       <MapboxMap
         ref={mapRef}
         {...viewport}
         onMove={(evt) => setViewport(evt.viewState)}
         onMoveEnd={handleMoveEnd}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle={mapStyle}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         attributionControl={false}
         style={{ width: "100%", height: "100%" }}
@@ -301,7 +340,7 @@ function MapContainer({
           const { cluster: isCluster, point_count: pointCount } =
             cluster.properties;
 
-          const network = NETWORKS[networkName];
+          const markerColor = getNetworkColor(networkName);
 
           if (isCluster) {
             return (
@@ -312,7 +351,7 @@ function MapContainer({
               >
                 <MapClusterMarker
                   pointCount={pointCount}
-                  color={network.markerColor}
+                  color={markerColor}
                   onClick={() =>
                     handleClusterClick(
                       cluster.id as number,
@@ -335,7 +374,7 @@ function MapContainer({
               longitude={longitude}
             >
               <MapMarker
-                color={network.markerColor}
+                color={markerColor}
                 onClick={() => handleMarkerClick(location)}
               />
             </Marker>
@@ -364,7 +403,7 @@ function MapContainer({
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-neutral-900/95 backdrop-blur-sm border border-neutral-800 rounded-lg px-4 py-2 shadow-lg">
           <p className="text-xs text-neutral-400">
             Showing all{" "}
-            <span className="font-semibold text-neutral-50">{filteredLocations.length}</span>{" "}
+            <span className="font-semibold text-neutral-50">{filteredLocations.length.toLocaleString()}</span>{" "}
             locations as individual dots
           </p>
         </div>
@@ -374,7 +413,7 @@ function MapContainer({
       <div className="absolute bottom-4 left-4 bg-neutral-900/90 backdrop-blur-sm border border-neutral-800 rounded-lg px-4 py-2 shadow-lg">
         <p className="text-sm text-neutral-400">
           {viewMode === 'clustered' ? 'Showing' : 'Total'}{" "}
-          <span className="font-semibold text-neutral-50">{pointCount}</span>{" "}
+          <span className="font-semibold text-neutral-50">{pointCount.toLocaleString()}</span>{" "}
           location{pointCount !== 1 ? "s" : ""}
         </p>
       </div>

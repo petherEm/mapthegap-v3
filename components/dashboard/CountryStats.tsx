@@ -1,6 +1,7 @@
 "use client";
 
 import { ChartBarIcon, MapPinIcon, BuildingOfficeIcon, SignalIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "next-themes";
 import type { CountryStatsOverview } from "@/lib/supabase/queries";
 import {
   PieChart,
@@ -10,13 +11,15 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 
 interface CountryStatsProps {
   data: CountryStatsOverview | null;
 }
 
 export function CountryStats({ data: stats }: CountryStatsProps) {
+  const { theme, resolvedTheme } = useTheme();
+
   if (!stats) {
     return (
       <div className="p-8 text-center text-neutral-600 dark:text-neutral-400">
@@ -32,9 +35,10 @@ export function CountryStats({ data: stats }: CountryStatsProps) {
     percentage: item.percentage,
   }));
 
-  // Get colors for networks
+  // Get colors for networks (theme-aware)
   const getNetworkColor = (networkName: string) => {
-    const network = NETWORKS[networkName as keyof typeof NETWORKS];
+    const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
+    const network = getNetworkConfig(networkName, currentTheme);
     return network?.color || "#94a3b8";
   };
 
@@ -155,7 +159,7 @@ export function CountryStats({ data: stats }: CountryStatsProps) {
                   <span className="text-sm text-neutral-800 dark:text-neutral-200">{city.city}</span>
                 </div>
                 <span className="text-sm font-semibold text-violet-500">
-                  {city.count} locations
+                  {city.count.toLocaleString()} locations
                 </span>
               </div>
             ))}

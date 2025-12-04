@@ -521,7 +521,7 @@ export function CountryMapView({
                   {country.name}
                 </h2>
                 <p className="text-xs text-neutral-600 dark:text-neutral-400 group-data-[collapsible=icon]:hidden">
-                  {locations.length} location{locations.length !== 1 ? "s" : ""}
+                  {locations.length.toLocaleString()} location{locations.length !== 1 ? "s" : ""}
                 </p>
               </div>
             </div>

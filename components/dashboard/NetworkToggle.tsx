@@ -1,8 +1,9 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
 import type { NetworkName } from "@/types";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 
 type NetworkToggleProps = {
   availableNetworks: NetworkName[];
@@ -15,6 +16,9 @@ export function NetworkToggle({
   activeNetworks,
   onToggle,
 }: NetworkToggleProps) {
+  const { theme, resolvedTheme } = useTheme();
+  const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
+
   return (
     <div className="rounded-lg bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4">
       <div className="flex items-center justify-between mb-3">
@@ -28,7 +32,7 @@ export function NetworkToggle({
 
       <div className="space-y-2">
         {availableNetworks.map((networkName) => {
-          const network = NETWORKS[networkName];
+          const network = getNetworkConfig(networkName, currentTheme);
           const isActive = activeNetworks.has(networkName);
 
           return (

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import {
   BarChart,
   Bar,
@@ -15,7 +16,7 @@ import {
 } from "recharts";
 import { MapPinIcon, ScaleIcon, ChartPieIcon } from "@heroicons/react/24/outline";
 import type { NetworkComparisonData } from "@/lib/supabase/queries";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 
 interface NetworkComparisonDashboardProps {
   data: NetworkComparisonData[];
@@ -30,9 +31,11 @@ export function NetworkComparisonDashboard({ data }: NetworkComparisonDashboardP
     );
   }
 
-  // Get network color from NETWORKS config
+  // Get network color from theme-aware config
+  const { theme, resolvedTheme } = useTheme();
   const getNetworkColor = (networkName: string) => {
-    const network = NETWORKS[networkName as keyof typeof NETWORKS];
+    const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
+    const network = getNetworkConfig(networkName, currentTheme);
     return network?.color || "#94a3b8";
   };
 

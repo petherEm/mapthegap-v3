@@ -1,7 +1,8 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import type { Location } from "@/types";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 import {
   MapPinIcon,
   BuildingOffice2Icon,
@@ -16,7 +17,9 @@ type LocationPopupProps = {
 };
 
 export function LocationPopup({ location, onClose }: LocationPopupProps) {
-  const network = NETWORKS[location.network_name];
+  const { theme, resolvedTheme } = useTheme();
+  const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
+  const network = getNetworkConfig(location.network_name, currentTheme);
 
   return (
     <div className="min-w-[280px] max-w-[320px] p-4 bg-neutral-900 rounded-lg border border-neutral-800 shadow-xl relative">

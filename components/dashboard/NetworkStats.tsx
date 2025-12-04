@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTheme } from "next-themes";
 import {
   PieChart,
   Pie,
@@ -9,7 +10,7 @@ import {
   Tooltip,
 } from "recharts";
 import type { Location, NetworkName } from "@/types";
-import { NETWORKS } from "@/lib/data/networks";
+import { getNetworkConfig } from "@/lib/data/networks";
 
 type NetworkStatsProps = {
   locations: Location[];
@@ -17,8 +18,11 @@ type NetworkStatsProps = {
 };
 
 export function NetworkStats({ locations, originalTotal }: NetworkStatsProps) {
+  const { theme, resolvedTheme } = useTheme();
+
   // Calculate stats
   const stats = useMemo(() => {
+    const currentTheme = (resolvedTheme || theme || 'dark') as 'light' | 'dark';
     const networkCounts = locations.reduce(
       (acc, location) => {
         acc[location.network_name] = (acc[location.network_name] || 0) + 1;
@@ -30,7 +34,7 @@ export function NetworkStats({ locations, originalTotal }: NetworkStatsProps) {
     const total = locations.length;
 
     return Object.entries(networkCounts).map(([networkName, count]) => {
-      const network = NETWORKS[networkName as NetworkName];
+      const network = getNetworkConfig(networkName as NetworkName, currentTheme);
       return {
         name: networkName,
         value: count,
@@ -38,7 +42,7 @@ export function NetworkStats({ locations, originalTotal }: NetworkStatsProps) {
         color: network.color,
       };
     });
-  }, [locations]);
+  }, [locations, theme, resolvedTheme]);
 
   const totalLocations = locations.length;
   const isFiltered = originalTotal !== undefined && originalTotal > totalLocations;
@@ -81,7 +85,7 @@ export function NetworkStats({ locations, originalTotal }: NetworkStatsProps) {
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <span className="text-neutral-900 dark:text-neutral-50 font-medium text-xs">
-                  {stat.value}
+                  {stat.value.toLocaleString()}
                 </span>
                 <span className="text-neutral-500 text-xs w-10 text-right">
                   {stat.percentage}%

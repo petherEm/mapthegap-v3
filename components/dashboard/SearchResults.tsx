@@ -157,7 +157,7 @@ export function SearchResults({
           {locations.length > 0 && (
             <div className="border-t border-neutral-200 dark:border-neutral-800 pt-3">
               <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-2">
-                Showing {Math.min(5, locations.length)} of {locations.length}
+                Showing {Math.min(5, locations.length)} of {locations.length.toLocaleString()}
               </p>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {locations.slice(0, 5).map((location) => (

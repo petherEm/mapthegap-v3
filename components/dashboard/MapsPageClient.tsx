@@ -134,12 +134,9 @@ export function MapsPageClient({ countryStats }: MapsPageClientProps) {
 
   return (
     <div className="pb-20">
-      {/* Header Section */}
+      {/* Dynamic Stats Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">
-          Explore Network Locations
-        </h1>
-        <p className="mt-1 text-muted-foreground">
+        <p className="text-muted-foreground">
           {totalLocations.toLocaleString()} locations across {countryStats.length} countries · {totalNetworks} networks available
         </p>
       </div>
